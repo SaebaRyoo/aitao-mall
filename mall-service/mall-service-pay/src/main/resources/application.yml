@@ -1,0 +1,66 @@
+server:
+  port: 18086
+jasypt:
+  encryptor:
+    algorithm: PBEWithMD5AndDES
+    iv-generator-classname: org.jasypt.iv.NoIvGenerator
+spring:
+  application:
+    name: pay
+  rabbitmq:
+    host: 120.26.69.48
+    port: 5672
+    username: admin
+    password: ENC(F7sPGHUiad/0t9Qm8YYtFsqSggCWNL34)
+    virtual-host: /aitao
+  cloud:
+    loadbalancer:
+      ribbon:
+        enabled: false
+    nacos:
+      discovery:
+        server-addr: 120.26.69.48:8848
+
+feign:
+  hystrix:
+    enabled: true
+#hystrix 配置
+hystrix:
+  command:
+    default:
+      execution:
+        timeout:
+          #如果enabled设置为false，则请求超时交给ribbon控制
+          enabled: true
+        isolation:
+          strategy: SEMAPHORE
+
+# 配置该微服务只能通过网关访问
+server-protect:
+  onlyFetchByGateway: false
+
+alipay:
+  # 商户id
+  app_id: ENC(/2vv+nMZCPtXpKtaC//21LVcKzd0UKJaVwQTm2dt+lc=)
+  
+  # 商户秘钥
+  merchant_private_key: ENC(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)
+  
+  # 支付宝公钥
+  alipay_public_key: ENC(fcNOEQ86jSnaVA+dkUFbBf3YQIwh5mezJaDiyS5U2AS4cNNy4HnS6vtWDs84n0zVN3l0RPvpMxPDFaGS+5sBMlGkFm6UmlUPGUTelcARPNB3hpe9Kth0Tpet5qPJw+26ID/NY6tqrvQhe08NpCMuQ61iOIEqtKZXTcPdzUHK/A5FTaN0BZxs6Y6FBCmpxmZ8GlhkRJHPlObQIw1HCIAFibeM+khOWoEOvrTTMnrw8+1/IXGeKPcj68dwlM8wQHMh7VN1CuIJxT7/vqkbA+nDh66rGc3qreCLOJgdVhK5fwtIfVFBRhVTrMVTbnIT5aH21KLCUuwVu2tmflZiI2wPNeIw6pOhjAOApdOe/2CUY714n5sHoboDBGPaJH5QTGmf/2Hb+FiNsZNiDje9Z1T1QcAf1dyHlQyqewX6T5fXIW8ufUeak8l6LMLVpja6zgGbhYDzqlkL0da8oStL/mNRZIyLMgOOgzXTce8Z6scMTYtNphz9wxJaljshlX1LYPreAHUlFAwPzpz954QvT65Ano4n1Da3Sv8h)
+
+  #支付状态异步通知
+  notify_url: ENC(7VhzeB4FoYCcB3fFIPDNlHi/v+tTVAVfociUnOQ+IbNkotg6TiZlkhQo3XKuWvp4yaQpyUeQWzavra3lr+6+eg==)
+
+  #支付状态同步通知
+  return_url: ENC(Hg1/wBrLrbf+3/RHZEetLtaFwghX0S7d2qy2H1+ZnfF+IbfrjkynkutqiUWa8TELj3Us4zuJm6R2pdwSYxhP1g==)
+
+  #签名方式
+  sign_type: RSA2
+
+  charset: utf-8
+
+  #支付宝开发环境网关, 生产环境去掉dev
+  gatewayUrl: https://openapi.alipaydev.com/gateway.do
+
+  format: json

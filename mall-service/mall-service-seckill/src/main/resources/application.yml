@@ -1,0 +1,50 @@
+server:
+  port: 18088
+jasypt:
+  encryptor:
+    algorithm: PBEWithMD5AndDES
+    iv-generator-classname: org.jasypt.iv.NoIvGenerator
+spring:
+  main:
+    allow-bean-definition-overriding: true
+  application:
+    name: seckill
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 120.26.69.48:8848
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://120.26.69.48:3306/mall_seckill?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
+    username: root
+    password: ENC(F7sPGHUiad/0t9Qm8YYtFsqSggCWNL34)
+  redis:
+    host: 120.26.69.48
+    port: 6379
+    password: ENC(F7sPGHUiad/0t9Qm8YYtFsqSggCWNL34)
+    database: 3
+  rabbitmq:
+    host: 120.26.69.48
+    port: 5672
+    username: admin
+    password: ENC(F7sPGHUiad/0t9Qm8YYtFsqSggCWNL34)
+    virtual-host: /aitao
+feign:
+  hystrix:
+    enabled: true
+
+#hystrix 配置
+hystrix:
+  command:
+    default:
+      execution:
+        timeout:
+          #如果enabled设置为false，则请求超时交给ribbon控制
+          enabled: true
+        isolation:
+          thread:
+            timeoutInMilliseconds: 10000
+          strategy: SEMAPHORE
+
+server-protect:
+  onlyFetchByGateway: false

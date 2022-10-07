@@ -1,0 +1,72 @@
+server:
+  port: 18085
+jasypt:
+  encryptor:
+    algorithm: PBEWithMD5AndDES
+    iv-generator-classname: org.jasypt.iv.NoIvGenerator
+spring:
+  application:
+    name: order
+  cloud:
+    loadbalancer:
+      ribbon:
+        enabled: false
+    nacos:
+      discovery:
+        server-addr: 120.26.69.48:8848
+
+  rabbitmq:
+    host: 120.26.69.48
+    port: 5672
+    username: admin
+    password: ENC(F7sPGHUiad/0t9Qm8YYtFsqSggCWNL34)
+    virtual-host: /aitao
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://120.26.69.48:3306/mall_order?useUnicode=true&characterEncoding=UTF-8&mall=UTC
+    username: root
+    password: ENC(F7sPGHUiad/0t9Qm8YYtFsqSggCWNL34)
+  redis:
+    host: 120.26.69.48
+    port: 6379
+    password: ENC(F7sPGHUiad/0t9Qm8YYtFsqSggCWNL34)
+    database: 2
+    jedis:
+      pool:
+        # 连接池最大连接数 默认值8
+        max-active: 20
+        # 连接池最大阻塞等待时间（使用负值表示没有限制）
+        max-wait: -1ms
+        # 连接池中的最大空闲连接
+        max-idle: 8
+        # 连接池中的最小空闲连接
+        min-idle: 0
+
+  main:
+    allow-bean-definition-overriding: true
+
+# 配置该微服务只能通过网关访问
+server-protect:
+  onlyFetchByGateway: false
+
+feign:
+  hystrix:
+    enabled: true
+  httpclient:
+    connection-timeout: 10000
+  client:
+    config:
+      default: # 指定feignclients对应的名称 如果指定的是default 表示全局所有的client 的超时时间设置
+        connectTimeout: 10000
+        readTimeout: 10000
+        loggerLevel: basic
+
+#hystrix 配置  采用信号量模式
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 10000
+          strategy: SEMAPHORE

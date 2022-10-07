@@ -1,0 +1,150 @@
+server:
+  port: 8001
+jasypt:
+  encryptor:
+    algorithm: PBEWithMD5AndDES
+    iv-generator-classname: org.jasypt.iv.NoIvGenerator
+# sa-token配置
+sa-token:
+  # SSO-相关配置
+  sso:
+    # SSO-Server端-单点登录授权地址
+    auth-url: http://sso.stp.com:9000/sso/auth
+    # SSO-Server端-单点注销地址
+    slo-url: http://sso.stp.com:9000/sso/logout
+
+  # 配置Sa-Token单独使用的Redis连接 （此处需要和SSO-Server端连接同一个Redis）
+#  alone-redis:
+#    # Redis数据库索引
+#    database: 1
+#    # Redis服务器地址
+#    host: 120.26.69.48
+#    # Redis服务器连接端口
+#    port: 6379
+#    # Redis服务器连接密码（默认为空）
+#    password: ENC(F7sPGHUiad/0t9Qm8YYtFsqSggCWNL34)
+#    # 连接超时时间
+#    timeout: 10s
+spring:
+  application:
+    name: gateway-web
+  redis:
+    host: 120.26.69.48
+    port: 6379
+    password: ENC(F7sPGHUiad/0t9Qm8YYtFsqSggCWNL34)
+    database: 1
+    timeout: 10s
+
+    jedis:
+      pool:
+        # 连接池最大连接数 默认值8
+        max-active: 20
+        # 连接池最大阻塞等待时间（使用负值表示没有限制）
+        max-wait: -1ms
+        # 连接池中的最大空闲连接
+        max-idle: 8
+        # 连接池中的最小空闲连接
+        min-idle: 0
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 120.26.69.48:8848
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+      globalcors:
+        cors-configurations:
+          '[/**]': # 匹配所有请求
+            allowedOrigins: "*" #跨域处理 允许所有的域
+            allowedMethods: # 支持的方法
+              - GET
+              - POST
+              - PUT
+              - DELETE
+      routes:
+
+        #商品微服务
+        - id: mall_goods_route
+          # 指定要路由的服务
+          # uri: http://192.168.10.105:18081
+          # lb：使用LoadBalancerClient实现负载均衡，后面goods是微服务名称[主要应用于集群环境]
+          uri: lb://goods
+          predicates:
+            - Path=/api/album/**,/api/brand/**,/api/category/**,/api/categoryBrand/**,/api/para/**,/api/pref/**,/api/spec/**,/api/stockBack/**,/api/spu/**,/api/sku/**,/api/template/**,/api/undoLog/**
+          filters:
+            # 去掉路径中的第一个名称 如: /api/brand -> /brand
+            - StripPrefix=1
+            #请求数限流 名字不能随便写 ，使用默认的过滤器facatory
+            - name: RequestRateLimiter
+              args:
+                key-resolver: "#{@ipKeyResolver}" # 用户身份唯一标识
+                # 每秒允许1个请求
+                redis-rate-limiter.replenishRate: 1
+                # 允许并发有4个请求[宽限个数]
+                redis-rate-limiter.burstCapacity: 4
+
+        # 搜索微服务
+        - id: mall_search_route
+          uri: lb://search
+          predicates:
+            - Path=/api/search/**
+          filters:
+            - StripPrefix=1
+            - name: RequestRateLimiter
+              args:
+                key-resolver: "#{@ipKeyResolver}"
+                redis-rate-limiter.replenishRate: 1
+                redis-rate-limiter.burstCapacity: 4
+        #用户微服务
+        - id: mall_user_route
+          uri: lb://user
+          predicates:
+            - Path=/api/user/**,/api/address/**,/api/areas/**,/api/cities/**,/api/provinces/**
+          filters:
+            - StripPrefix=1
+            - name: RequestRateLimiter
+              args:
+                key-resolver: "#{@ipKeyResolver}"
+                redis-rate-limiter.replenishRate: 1
+                redis-rate-limiter.burstCapacity: 4
+        # 认证服务
+        - id: mall_auth_route
+          uri: lb://sso-server
+          predicates:
+            - Path=/api/sso/**
+          filters:
+            - StripPrefix=1
+            - name: RequestRateLimiter
+              args:
+                key-resolver: "#{@ipKeyResolver}" # 用户身份唯一标识
+                # 每秒允许1个请求
+                redis-rate-limiter.replenishRate: 1
+                # 允许并发有4个请求[宽限个数]
+                redis-rate-limiter.burstCapacity: 4
+        # 订单服务
+        - id: mall_order_route
+          uri: lb://order
+          predicates:
+            - Path=/api/cart/**,/api/categoryReport/**,/api/orderConfig/**,/api/order/**,/api/orderItem/**,/api/orderLog/**,/api/preferential/**,/api/returnCause/**,/api/returnOrder/**,/api/returnOrderItem/**
+          filters:
+            - StripPrefix=1
+            - name: RequestRateLimiter
+              args:
+                key-resolver: "#{@ipKeyResolver}"
+                redis-rate-limiter.replenishRate: 1
+                redis-rate-limiter.burstCapacity: 4
+
+        # 支付微服务
+        - id: mall_pay_route
+          uri: lb://pay
+          predicates:
+            - Path=/api/alipay/**
+          filters:
+            - StripPrefix=1
+            - name: RequestRateLimiter
+              args:
+                key-resolver: "#{@ipKeyResolver}"
+                redis-rate-limiter.replenishRate: 1
+                redis-rate-limiter.burstCapacity: 4

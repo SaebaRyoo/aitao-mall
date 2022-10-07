@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>aitao</artifactId>
+        <groupId>com.aitao</groupId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>mall-service</artifactId>
+    <!--打包格式为pom包-->
+    <packaging>pom</packaging>
+    <description>商城各大微服务的父工程</description>
+    <modules>
+        <module>mall-service-goods</module>
+        <module>mall-service-file</module>
+        <module>mall-service-search</module>
+        <module>mall-service-user</module>
+        <module>mall-service-system</module>
+        <module>mall-service-order</module>
+        <module>mall-service-pay</module>
+        <module>mall-service-shipping</module>
+        <module>mall-service-seckill</module>
+    </modules>
+
+    <properties>
+        <maven.compiler.source>8</maven.compiler.source>
+        <maven.compiler.target>8</maven.compiler.target>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.aitao</groupId>
+            <artifactId>mall-common-db</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <!--拦截器-->
+        <dependency>
+            <groupId>com.aitao</groupId>
+            <artifactId>mall-component-security-starter</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <!--将通过gateway请求的header添加到feign中-->
+        <dependency>
+            <groupId>com.aitao</groupId>
+            <artifactId>mall-component-transport-header-feign-starter</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <!--对敏感数据进行加密-->
+        <dependency>
+            <groupId>com.github.ulisesbocchio</groupId>
+            <artifactId>jasypt-spring-boot-starter</artifactId>
+            <version>3.0.4</version>
+        </dependency>
+    </dependencies>
+    <build>
+        <plugins>
+            <!--springboot运行jar包时提示no main manifest attribute解决方法-->
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <!--支持打包第三方sdk-->
+                <configuration>
+                    <includeSystemScope>true</includeSystemScope>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>

@@ -1,0 +1,31 @@
+server:
+  port: 18081
+
+# According to their release notes default encryption algorithm has been changed in 3.0.0 so what they suggest is to set these:
+jasypt:
+  encryptor:
+    algorithm: PBEWithMD5AndDES
+    iv-generator-classname: org.jasypt.iv.NoIvGenerator
+spring:
+  application:
+    name: goods
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://120.26.69.48:3306/mall_goods?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
+    username: root
+    password: ENC(F7sPGHUiad/0t9Qm8YYtFsqSggCWNL34)
+  redis:
+    database: 2
+    host: 120.26.69.48
+    port: 6379
+    password: ENC(F7sPGHUiad/0t9Qm8YYtFsqSggCWNL34)
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 120.26.69.48:8848
+feign:
+  hystrix:
+    enabled: true
+# 配置该微服务只能通过网关访问
+server-protect:
+  onlyFetchByGateway: false

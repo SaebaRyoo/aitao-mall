@@ -1,0 +1,22 @@
+spring:
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+  application:
+    name: file
+  cloud:
+    loadbalancer:
+      ribbon:
+        enabled: false
+    nacos:
+      discovery:
+        server-addr: 120.26.69.48:8848
+server:
+  port: 18082
+# 配置该微服务只能通过网关访问
+server-protect:
+  onlyFetchByGateway: false
+#feign:
+#  hystrix:
+#    enabled: true

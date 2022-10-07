@@ -1,0 +1,28 @@
+server:
+  port: 18087
+jasypt:
+  encryptor:
+    algorithm: PBEWithMD5AndDES
+    iv-generator-classname: org.jasypt.iv.NoIvGenerator
+spring:
+  application:
+    name: logistics
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://120.26.69.48:3306/mall_logistics?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
+    username: root
+    password: ENC(F7sPGHUiad/0t9Qm8YYtFsqSggCWNL34)
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 120.26.69.48:8848
+# 配置该微服务只能通过网关访问
+server-protect:
+  onlyFetchByGateway: false
+
+
+# 第三方物流平台
+shipping:
+  secret_key: ENC(q2550nFmuwVgRL5RXcFaUtX0DoEW9rcP3yfiEzqiw8Q=)
+  secret_secret: ENC(K7FRNZaFZhq/hILMWd/higU6+ZGosm4R28ZPQWMpRs5U9ghk6m5Q8PFtpkak/q6j)
+  callback: http://120.26.69.48:18087/shipping/callback
